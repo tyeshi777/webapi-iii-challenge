@@ -1,5 +1,5 @@
 const express = require("express");
-
+const Post = require("./postDb.js");
 const User = require("./userDb.js");
 
 const router = express.Router();
@@ -36,7 +36,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id/posts", (req, res) => {
   const userId = req.params.id;
   User.getUserPosts(userId)
     .then(post => {
@@ -44,6 +44,29 @@ router.get("/:id", (req, res) => {
     })
     .catch(err => {
       res.status(500).json({ err: "no post by the id" });
+    });
+});
+
+router.put("/:id", (req, res) => {
+  const userId = req.params.id;
+  const userBody = req.body;
+  User.update(userId, userBody)
+    .then(user => {
+      res.status(200).json(user);
+    })
+    .catch(err => {
+      res.status(500).json({ err: "cannot update bro" });
+    });
+});
+
+router.delete("/:id", (req, res) => {
+  const userId = req.params.id;
+  User.remove(userId)
+    .then(user => {
+      res.status(204).end();
+    })
+    .catch(err => {
+      res.status(500).json({ err: "no deleting bro" });
     });
 });
 module.exports = router;
